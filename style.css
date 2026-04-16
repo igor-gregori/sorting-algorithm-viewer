@@ -1,0 +1,21 @@
+body {
+  background-color: #141414;
+  height: 100vh;
+  margin: 0;
+  font-family: "Roboto Mono";
+  font-size: 20px;
+}
+
+canvas {
+  background-color: #1f1f1f;
+  border-radius: 2px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
