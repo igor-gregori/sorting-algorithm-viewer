@@ -21,8 +21,44 @@ body {
   display: block;
 }
 
-.menu p {
+.menu {
   font-family: "Roboto Mono";
   font-size: 20px;
   color: whitesmoke;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.menu-sa {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  gap: 5px;
+}
+
+.menu-sa select {
+  background-color: #1f1f1f;
+  color: whitesmoke;
+  font-family: "Roboto Mono";
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+}
+
+.play-btn {
+  margin: 20px;
+  padding: 10px;
+  background-color: #1f2a1f;
+  color: whitesmoke;
+  font-family: "Roboto Mono";
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.play-btn:hover {
+  background-color: #102810;
 }

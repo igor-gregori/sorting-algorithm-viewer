@@ -13,7 +13,17 @@
   <body>
     <div id="main" class="main">
       <div class="menu">
-        <p>Menu</p>
+        <div class="menu-sa">
+          <label for="algs">Choose an algorithm:</label>
+          <select name="algs" id="algs">
+            <option value="bubble-sort" selected>Bubble Sort</option>
+            <option value="insertion-sort">Insertion Sort</option>
+            <option value="heap-sort">Heap Sort</option>
+            <option value="merge-sort">Merge Sort</option>
+            <option value="quick-sort">Quick Sort</option>
+          </select>
+        </div>
+        <button class="play-btn">Play</button>
       </div>
       <div id="board" class="board">
         <canvas class="canvas" id="canvas"></canvas>
