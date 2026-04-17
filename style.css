@@ -1,21 +1,28 @@
-body {
-  background-color: #141414;
-  height: 100vh;
+* {
   margin: 0;
-  font-family: "Roboto Mono";
-  font-size: 20px;
+  padding: 0;
+  border: 0;
 }
 
-canvas {
-  background-color: #1f1f1f;
-  border-radius: 2px;
+body {
+  background-color: #141414;
 }
 
 .main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
   height: 100vh;
-  margin: 0;
+}
+
+.canvas {
+  background-color: #1f1f1f;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.menu p {
+  font-family: "Roboto Mono";
+  font-size: 20px;
+  color: whitesmoke;
 }

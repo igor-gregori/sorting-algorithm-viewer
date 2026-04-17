@@ -1,5 +1,10 @@
+const board = document.getElementById("board");
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+ctx.canvas.width = board.offsetWidth;
+ctx.canvas.height = board.offsetHeight;
 
 let arr = [];
 
@@ -11,7 +16,7 @@ const barWidth = 10;
 let barPos = 10;
 function draw() {
   // ctx.fillStyle = "white";
-  // ctx.fillRect(10, canvas.height - 10, 10, 10);
+  // ctx.fillRect(10, 10, 10, 10);
   for (let i = 0; i < arr.length; i++) {
     ctx.fillStyle = "#3b3b3b";
     ctx.fillRect(barPos, canvas.height - arr[i], barWidth, arr[i]);
