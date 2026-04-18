@@ -7,8 +7,12 @@ const playBtn = document.getElementById("play-btn");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const canvasWidth = board.offsetWidth;
-const canvasHeight = board.offsetHeight;
+// todo: steps per seconds input
+// todo: number of bars input
+
+let canvasWidth = board.offsetWidth;
+let canvasHeight = board.offsetHeight;
+
 ctx.canvas.width = canvasWidth;
 ctx.canvas.height = canvasHeight;
 
@@ -17,6 +21,7 @@ algSel.addEventListener("change", (e) => {
 });
 
 randBtn.addEventListener("click", () => {
+  stopAnimation();
   randomizeArr();
   draw();
 });
@@ -26,7 +31,7 @@ playBtn.addEventListener("click", () => {
 });
 
 let arr = [];
-let numberOfBars = 50;
+let numberOfBars = 100;
 let barGap = 2;
 let barWidth = canvasWidth / numberOfBars - barGap;
 let algSelected = "bubble-sort";
@@ -34,6 +39,7 @@ let algSelected = "bubble-sort";
 const barColor = "#3b3b3b";
 const selectedBarColor = "#8a8a8a";
 const biggerBarColor = "#246bb3";
+const finishBarColor = "#6f8a6f";
 
 function randomizeArr() {
   arr = [];
@@ -58,72 +64,103 @@ function draw() {
 randomizeArr();
 draw();
 
-function play() {
-  if (algSelected === "bubble-sort") {
-    renderBubbleSort();
-    return;
+let animationId = null;
+
+function stopAnimation() {
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
   }
-  alert("alg not impl");
 }
 
-let msPerStep = 100;
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+function createBubbleSortState() {
+  return {
+    step: "select-indexes",
+    changes: 0,
+    i: 0,
+    j: 1,
+    done: false,
+  };
+}
 
-async function renderBubbleSort() {
-  let steps = ["select-indexes", "select-bigger", "change", "walk"];
-  let step = steps[0];
+function bubbleSortStep(state) {
+  if (state.done) return;
 
-  let finish = false;
+  let { step, i, j } = state;
 
-  let indexOne = 0;
-  let indexTwo = 1;
-  while (true) {
-    if (finish) break;
-    // impl finish func
-    await sleep(msPerStep);
-
-    if (step === "select-indexes") {
-      arr[indexOne].color = selectedBarColor;
-      arr[indexTwo].color = selectedBarColor;
-      draw();
-      step = "select-bigger";
-      continue;
-    }
-
-    if (step === "select-bigger") {
-      if (arr[indexOne].val >= arr[indexTwo]) {
-        arr[indexOne].color = biggerBarColor;
+  switch (step) {
+    case "select-indexes":
+      arr[i].color = selectedBarColor;
+      arr[j].color = selectedBarColor;
+      state.step = "select-bigger";
+      break;
+    case "select-bigger":
+      if (arr[i].val >= arr[j].val) {
+        arr[i].color = biggerBarColor;
       } else {
-        arr[indexTwo].color = biggerBarColor;
+        arr[j].color = biggerBarColor;
       }
-      draw();
-      step = "change";
-      continue;
-    }
+      state.step = "change";
+      break;
+    case "change":
+      if (arr[j].val < arr[i].val) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        state.changes++;
+      }
+      state.step = "walk";
+      break;
+    case "walk":
+      arr[i].color = barColor;
+      arr[j].color = barColor;
+      state.i++;
+      state.j++;
+      if (state.j >= arr.length) {
+        state.i = 0;
+        state.j = 1;
+        if (state.changes === 0) {
+          for (let k = 0; k < arr.length; k++) {
+            arr[k].color = finishBarColor;
+          }
+          state.done = true;
+          return;
+        }
+        state.changes = 0;
+      }
+      state.step = "select-indexes";
+      break;
+  }
+}
 
-    if (step === "change") {
-      if (arr[indexTwo].val <= arr[indexOne].val) {
-        const aux = arr[indexOne];
-        arr[indexOne] = arr[indexTwo];
-        arr[indexTwo] = aux;
-      }
-      draw();
-      step = "walk";
-      continue;
-    }
+let stepsPerSecond = 100;
+let stepInterval = 1000 / stepsPerSecond;
 
-    if (step === "walk") {
-      arr[indexOne].color = barColor;
-      arr[indexTwo].color = barColor;
-      draw();
-      indexOne++;
-      indexTwo++;
-      if (indexTwo >= arr.length) {
-        indexOne = 0;
-        indexTwo = 1;
-      }
-      step = "select-indexes";
-      continue;
+function runAnimation(stepFn, state) {
+  let lastTime = performance.now();
+  let accumulator = 0;
+  function frame(currentTime) {
+    const delta = currentTime - lastTime;
+    lastTime = currentTime;
+    accumulator += delta;
+    while (accumulator >= stepInterval) {
+      stepFn(state);
+      accumulator -= stepInterval;
+      if (state.done) break;
+    }
+    draw();
+    if (!state.done) {
+      animationId = requestAnimationFrame(frame);
     }
   }
+  animationId = requestAnimationFrame(frame);
+}
+
+function play() {
+  stopAnimation();
+  if (algSelected === "bubble-sort") {
+    const state = createBubbleSortState();
+    runAnimation(bubbleSortStep, state);
+    return;
+  }
+  // remove this when finish all algs
+  alert("alg not impl");
 }
