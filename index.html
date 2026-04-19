@@ -11,29 +11,35 @@
     />
   </head>
   <body>
-    <div id="main" class="main">
-      <div class="menu">
-        <div class="menu-sa">
-          <label for="algs">Choose an algorithm</label>
-          <select name="algs" id="alg-sel">
-            <option value="bubble-sort" selected>Bubble Sort</option>
-            <option value="insertion-sort">Insertion Sort</option>
-            <option value="heap-sort">Heap Sort</option>
-            <option value="merge-sort">Merge Sort</option>
-            <option value="quick-sort">Quick Sort</option>
-          </select>
-        </div>
-        <div class="btns">
-          <div class="rand-div">
-            <button class="rand-btn" id="rand-btn">Randomize</button>
+    <div id="main">
+      <div id="menu">
+        <div>
+          <div id="menu-sa">
+            <label for="algs">Choose an algorithm</label>
+            <select name="algs" id="algorithm-selector">
+              <option value="bubble-sort" selected>Bubble Sort</option>
+              <option value="insertion-sort">Insertion Sort</option>
+              <option value="heap-sort">Heap Sort</option>
+              <option value="merge-sort">Merge Sort</option>
+              <option value="quick-sort">Quick Sort</option>
+            </select>
           </div>
-          <div class="play-div">
-            <button class="play-btn" id="play-btn">Play</button>
+          <div id="menu-bi">
+            <label for="number-bars">Number of bars:</label>
+            <input id="number-bars-input" name="number-bars" value="25" />
+          </div>
+        </div>
+        <div id="btns-div">
+          <div id="rand-div">
+            <button id="rand-btn">Randomize</button>
+          </div>
+          <div id="play-div">
+            <button id="play-btn">Play</button>
           </div>
         </div>
       </div>
-      <div id="board" class="board">
-        <canvas class="canvas" id="canvas"></canvas>
+      <div id="board">
+        <canvas id="canvas"></canvas>
       </div>
     </div>
     <script src="script.js"></script>

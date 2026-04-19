@@ -1,6 +1,8 @@
 const board = document.getElementById("board");
 
-const algSel = document.getElementById("alg-sel");
+const algorithmSelector = document.getElementById("algorithm-selector");
+const numberBarsInput = document.getElementById("number-bars-input");
+
 const randBtn = document.getElementById("rand-btn");
 const playBtn = document.getElementById("play-btn");
 
@@ -16,8 +18,19 @@ let canvasHeight = board.offsetHeight;
 ctx.canvas.width = canvasWidth;
 ctx.canvas.height = canvasHeight;
 
-algSel.addEventListener("change", (e) => {
+algorithmSelector.addEventListener("change", (e) => {
+  stopAnimation();
   algSelected = e.target.value;
+});
+
+numberBarsInput.addEventListener("change", (e) => {
+  const value = Number(e.target.value);
+  if (value !== NaN && value >= 5 && value <= 100) {
+    stopAnimation();
+    numberOfBars = value;
+    randomizeArr();
+    draw();
+  }
 });
 
 randBtn.addEventListener("click", () => {
@@ -31,9 +44,8 @@ playBtn.addEventListener("click", () => {
 });
 
 let arr = [];
-let numberOfBars = 100;
+let numberOfBars = 25;
 let barGap = 2;
-let barWidth = canvasWidth / numberOfBars - barGap;
 let algSelected = "bubble-sort";
 
 const barColor = "#3b3b3b";
@@ -53,6 +65,7 @@ function randomizeArr() {
 
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  const barWidth = canvasWidth / numberOfBars - barGap;
   let barPos = barGap;
   for (let i = 0; i < arr.length; i++) {
     ctx.fillStyle = arr[i].color;
@@ -156,11 +169,27 @@ function runAnimation(stepFn, state) {
 
 function play() {
   stopAnimation();
+
+  const numberBarsInputValue = Number(numberBarsInput.value);
+  if (
+    numberBarsInputValue === NaN ||
+    numberBarsInputValue < 5 ||
+    numberBarsInputValue > 100
+  ) {
+    alert("Number os bars must be  5 > x < 100");
+    numberOfBars = 25;
+    numberBarsInput.value = 25;
+    randomizeArr();
+    draw();
+  }
+
+  numberOfBars = numberBarsInput.value;
+
   if (algSelected === "bubble-sort") {
     const state = createBubbleSortState();
     runAnimation(bubbleSortStep, state);
     return;
   }
-  // remove this when finish all algs
+
   alert("alg not impl");
 }
