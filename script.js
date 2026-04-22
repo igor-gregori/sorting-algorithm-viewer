@@ -2,15 +2,13 @@ const board = document.getElementById("board");
 
 const algorithmSelector = document.getElementById("algorithm-selector");
 const numberBarsInput = document.getElementById("number-bars-input");
+const stepsPerSecondInput = document.getElementById("steps-per-second-input");
 
 const randBtn = document.getElementById("rand-btn");
 const playBtn = document.getElementById("play-btn");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
-// todo: steps per seconds input
-// todo: number of bars input
 
 let canvasWidth = board.offsetWidth;
 let canvasHeight = board.offsetHeight;
@@ -25,11 +23,19 @@ algorithmSelector.addEventListener("change", (e) => {
 
 numberBarsInput.addEventListener("change", (e) => {
   const value = Number(e.target.value);
-  if (value !== NaN && value >= 5 && value <= 100) {
+  if (!Number.isNaN(value) && value >= 5 && value <= 300) {
     stopAnimation();
     numberOfBars = value;
     randomizeArr();
     draw();
+  }
+});
+
+stepsPerSecondInput.addEventListener("change", (e) => {
+  const value = Number(e.target.value);
+  if (!Number.isNaN(value) && value >= 1 && value <= 3000) {
+    stepsPerSecond = value;
+    stepInterval = 1000 / stepsPerSecond;
   }
 });
 
@@ -44,7 +50,7 @@ playBtn.addEventListener("click", () => {
 });
 
 let arr = [];
-let numberOfBars = 25;
+let numberOfBars = 30;
 let barGap = 2;
 let algSelected = "bubble-sort";
 
@@ -144,7 +150,7 @@ function bubbleSortStep(state) {
   }
 }
 
-let stepsPerSecond = 100;
+let stepsPerSecond = 3;
 let stepInterval = 1000 / stepsPerSecond;
 
 function runAnimation(stepFn, state) {
@@ -172,18 +178,28 @@ function play() {
 
   const numberBarsInputValue = Number(numberBarsInput.value);
   if (
-    numberBarsInputValue === NaN ||
+    Number.isNaN(numberBarsInputValue) ||
     numberBarsInputValue < 5 ||
-    numberBarsInputValue > 100
+    numberBarsInputValue > 300
   ) {
-    alert("Number os bars must be  5 > x < 100");
-    numberOfBars = 25;
-    numberBarsInput.value = 25;
-    randomizeArr();
-    draw();
+    alert("'Number os bars' must be a number between 5 and 300");
+    return;
+  }
+
+  const stepsPerSecondValue = Number(stepsPerSecondInput.value);
+  if (
+    Number.isNaN(stepsPerSecondValue) ||
+    stepsPerSecondValue < 1 ||
+    stepsPerSecondValue > 3000
+  ) {
+    alert("'Steps per second' must be a number between 1 and 3000");
+    return;
   }
 
   numberOfBars = numberBarsInput.value;
+
+  stepsPerSecond = stepsPerSecondValue;
+  stepInterval = 1000 / stepsPerSecond;
 
   if (algSelected === "bubble-sort") {
     const state = createBubbleSortState();
