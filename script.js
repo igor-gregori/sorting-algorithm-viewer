@@ -122,8 +122,11 @@ function bubbleSortStep(state) {
       state.step = "change";
       break;
     case "change":
+      let aux;
       if (arr[j].val < arr[i].val) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        aux = arr[i];
+        arr[i] = arr[j];
+        arr[j] = aux;
         state.changes++;
       }
       state.step = "walk";
@@ -146,6 +149,67 @@ function bubbleSortStep(state) {
         state.changes = 0;
       }
       state.step = "select-indexes";
+      break;
+  }
+}
+
+function createInsertionSortState() {
+  return {
+    step: "select-main-index",
+    i: 1,
+    j: 0,
+  };
+}
+
+// fix this steps
+function insertionSortStep(state) {
+  console.log("state:", state);
+  if (state.i > arr.length) return;
+
+  let { step, i, j } = state;
+
+  switch (step) {
+    case "select-main-index":
+      arr[i].color = selectedBarColor;
+      state.step = "select-aux-index";
+      break;
+    case "select-aux-index":
+      arr[j].color = selectedBarColor;
+      state.step = "select-bigger";
+      break;
+    case "select-bigger":
+      if (arr[i].val < arr[j].val) {
+        arr[j].color = biggerBarColor;
+        state.step = "walk-aux";
+      } else {
+        arr[i].color = biggerBarColor;
+        state.step = "change";
+      }
+      break;
+    case "walk-aux":
+      if (j === 0) {
+        state.step = "change";
+        break;
+      }
+      arr[j].color = barColor;
+      state.j--;
+      state.step = "select-aux-index";
+      break;
+    case "walk-main":
+      state.i++;
+      state.j = state.i - 1;
+      state.step = "select-main-index";
+      break;
+    case "change":
+      arr[i].color = barColor;
+      arr[j].color = barColor;
+      let aux;
+      for (let k = i; k > j; k--) {
+        aux = arr[k];
+        arr[k] = arr[k - 1];
+        arr[k - 1] = aux;
+      }
+      state.step = "walk-main";
       break;
   }
 }
@@ -204,6 +268,12 @@ function play() {
   if (algSelected === "bubble-sort") {
     const state = createBubbleSortState();
     runAnimation(bubbleSortStep, state);
+    return;
+  }
+
+  if (algSelected === "insertion-sort") {
+    const state = createInsertionSortState();
+    runAnimation(insertionSortStep, state);
     return;
   }
 
