@@ -158,15 +158,20 @@ function createInsertionSortState() {
     step: "select-main-index",
     i: 1,
     j: 0,
+    changeWith: null,
   };
 }
 
-// fix this steps
 function insertionSortStep(state) {
-  console.log("state:", state);
-  if (state.i > arr.length) return;
+  if (state.i >= arr.length) {
+    for (let k = 0; k < arr.length; k++) {
+      arr[k].color = finishBarColor;
+    }
+    state.done = true;
+    return;
+  }
 
-  let { step, i, j } = state;
+  let { step, i, j, changeWith } = state;
 
   switch (step) {
     case "select-main-index":
@@ -178,24 +183,35 @@ function insertionSortStep(state) {
       state.step = "select-bigger";
       break;
     case "select-bigger":
-      if (arr[i].val < arr[j].val) {
+      if (arr[i].val > arr[j].val) {
+        arr[i].color = biggerBarColor;
+        if (changeWith !== null) {
+          state.step = "change";
+          break;
+        }
+        state.step = "walk-main";
+      } else {
+        state.changeWith = j;
         arr[j].color = biggerBarColor;
         state.step = "walk-aux";
-      } else {
-        arr[i].color = biggerBarColor;
-        state.step = "change";
       }
       break;
     case "walk-aux":
-      if (j === 0) {
+      arr[j].color = barColor;
+      if (j === 0 && state.changeWith !== null) {
         state.step = "change";
         break;
       }
-      arr[j].color = barColor;
+      if (j === 0) {
+        state.step = "walk-main";
+        break;
+      }
       state.j--;
       state.step = "select-aux-index";
       break;
     case "walk-main":
+      arr[i].color = barColor;
+      arr[j].color = barColor;
       state.i++;
       state.j = state.i - 1;
       state.step = "select-main-index";
@@ -204,12 +220,13 @@ function insertionSortStep(state) {
       arr[i].color = barColor;
       arr[j].color = barColor;
       let aux;
-      for (let k = i; k > j; k--) {
+      for (let k = i; k > state.changeWith; k--) {
         aux = arr[k];
         arr[k] = arr[k - 1];
         arr[k - 1] = aux;
       }
       state.step = "walk-main";
+      state.changeWith = null;
       break;
   }
 }
