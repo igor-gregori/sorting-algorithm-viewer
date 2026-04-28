@@ -294,7 +294,11 @@ function play() {
     return;
   }
 
-  // implement quick sort
+  // implement quick sort - idk, view with bars isn't cool
+  // maybe in v1 more two simple algs (bubble family)?
+  // - Selection Sort
+  // - Cocktail Shaker Sort
+  // - Gnome Sort
 
   alert("alg not impl");
 }
