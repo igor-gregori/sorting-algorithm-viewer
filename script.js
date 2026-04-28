@@ -294,5 +294,7 @@ function play() {
     return;
   }
 
+  // implement quick sort
+
   alert("alg not impl");
 }
