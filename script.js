@@ -288,17 +288,15 @@ function play() {
     return;
   }
 
+  if (algSelected === "cocktail-sort") {
+    // start impl here
+  }
+
   if (algSelected === "insertion-sort") {
     const state = createInsertionSortState();
     runAnimation(insertionSortStep, state);
     return;
   }
-
-  // implement quick sort - idk, view with bars isn't cool
-  // maybe in v1 more two simple algs (bubble family)?
-  // - Selection Sort
-  // - Cocktail Shaker Sort
-  // - Gnome Sort
 
   alert("alg not impl");
 }
