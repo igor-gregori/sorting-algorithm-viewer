@@ -153,6 +153,31 @@ function bubbleSortStep(state) {
   }
 }
 
+function createCocktailSortState() {
+  return {
+    step: "select-indexes",
+    changes: 0,
+    direction: "right",
+    i: 0,
+    j: 1,
+  };
+}
+
+function cocktailSortStep(state) {
+  if (state.changes <= 0) return;
+
+  let { step, i, j } = state;
+
+  switch (step) {
+    case "select-indexes":
+      // https://www.geeksforgeeks.org/dsa/cocktail-sort/
+      arr[i].color = selectedBarColor;
+      arr[j].color = selectedBarColor;
+      state.step = "select-bigger";
+      break;
+  }
+}
+
 function createInsertionSortState() {
   return {
     step: "select-main-index",
@@ -289,7 +314,9 @@ function play() {
   }
 
   if (algSelected === "cocktail-sort") {
-    // start impl here
+    const state = createCocktailSortState();
+    runAnimation(cocktailSortStep, state);
+    return;
   }
 
   if (algSelected === "insertion-sort") {
