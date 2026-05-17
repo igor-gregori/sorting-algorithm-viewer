@@ -316,6 +316,75 @@ function insertionSortStep(state) {
   }
 }
 
+function createSelectionSortState() {
+  return {
+    step: "select-base",
+    i: 0,
+    j: 1,
+    minIndex: 0,
+    done: false,
+  };
+}
+
+function selectionSortStep(state) {
+  if (state.done) return;
+
+  let { step, i, j, minIndex } = state;
+
+  switch (step) {
+    case "select-base":
+      arr[i].color = selectedBarColor;
+      state.minIndex = i;
+      state.j = i + 1;
+      state.step = "select-compare";
+      break;
+    case "select-compare":
+      arr[j].color = selectedBarColor;
+      state.step = "check-min";
+      break;
+    case "check-min":
+      if (arr[j].val < arr[minIndex].val) {
+        if (minIndex !== i) {
+          arr[minIndex].color = barColor;
+        }
+        state.minIndex = j;
+        arr[j].color = biggerBarColor;
+      } else {
+        arr[j].color = barColor;
+      }
+      state.step = "walk-scan";
+      break;
+    case "walk-scan":
+      state.j++;
+      if (state.j < arr.length) {
+        state.step = "select-compare";
+      } else {
+        state.step = "swap";
+      }
+      break;
+    case "swap":
+      if (state.minIndex !== i) {
+        let aux = arr[i];
+        arr[i] = arr[state.minIndex];
+        arr[state.minIndex] = aux;
+      }
+
+      arr[i].color = barColor;
+      arr[state.minIndex].color = barColor;
+
+      state.i++;
+      if (state.i >= arr.length - 1) {
+        for (let k = 0; k < arr.length; k++) {
+          arr[k].color = finishBarColor;
+        }
+        state.done = true;
+        return;
+      }
+      state.step = "select-base";
+      break;
+  }
+}
+
 let stepsPerSecond = 3;
 let stepInterval = 1000 / stepsPerSecond;
 
@@ -382,6 +451,12 @@ function play() {
   if (algSelected === "insertion-sort") {
     const state = createInsertionSortState();
     runAnimation(insertionSortStep, state);
+    return;
+  }
+
+  if (algSelected === "selection-sort") {
+    const state = createSelectionSortState();
+    runAnimation(selectionSortStep, state);
     return;
   }
 
