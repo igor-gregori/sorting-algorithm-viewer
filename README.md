@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://igor-gregori.github.io/sorting-algorithm-viewer/" target="_blank">🔗 Live demo: https://igor-gregori.github.io/sorting-algorithm-viewer/</a>
+</p>
+
 # Sorting algorithm viewer
 
 A sorting algorithm is a method used to arrange elements in a list or array in a specific order, typically numerical or lexicographical. These algorithms are fundamental to computer science as they optimize data retrieval and search operations, such as Binary Search.
