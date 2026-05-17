@@ -160,20 +160,80 @@ function createCocktailSortState() {
     direction: "right",
     i: 0,
     j: 1,
+    start: 0,
+    end: arr.length - 1,
+    done: false,
   };
 }
 
 function cocktailSortStep(state) {
-  if (state.changes <= 0) return;
+  if (state.done) return;
 
   let { step, i, j } = state;
 
   switch (step) {
     case "select-indexes":
-      // https://www.geeksforgeeks.org/dsa/cocktail-sort/
       arr[i].color = selectedBarColor;
       arr[j].color = selectedBarColor;
       state.step = "select-bigger";
+      break;
+    case "select-bigger":
+      if (arr[i].val >= arr[j].val) {
+        arr[i].color = biggerBarColor;
+      } else {
+        arr[j].color = biggerBarColor;
+      }
+      state.step = "change";
+      break;
+    case "change":
+      if (arr[i].val > arr[j].val) {
+        let aux = arr[i];
+        arr[i] = arr[j];
+        arr[j] = aux;
+        state.changes++;
+      }
+      state.step = "walk";
+      break;
+    case "walk":
+      arr[i].color = barColor;
+      arr[j].color = barColor;
+
+      if (state.direction === "right") {
+        state.i++;
+        state.j++;
+        if (state.j > state.end) {
+          state.end--;
+          if (state.changes === 0 || state.start >= state.end) {
+            for (let k = 0; k < arr.length; k++) {
+              arr[k].color = finishBarColor;
+            }
+            state.done = true;
+            return;
+          }
+          state.direction = "left";
+          state.changes = 0;
+          state.j = state.end;
+          state.i = state.j - 1;
+        }
+      } else {
+        state.i--;
+        state.j--;
+        if (state.i < state.start) {
+          state.start++;
+          if (state.changes === 0 || state.start >= state.end) {
+            for (let k = 0; k < arr.length; k++) {
+              arr[k].color = finishBarColor;
+            }
+            state.done = true;
+            return;
+          }
+          state.direction = "right";
+          state.changes = 0;
+          state.i = state.start;
+          state.j = state.i + 1;
+        }
+      }
+      state.step = "select-indexes";
       break;
   }
 }
